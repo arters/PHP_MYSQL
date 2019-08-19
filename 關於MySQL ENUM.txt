@@ -17,6 +17,10 @@ CREATE TABLE t_shirts (
 INSERT INTO t_shirts (name, size) VALUES ('AAA','large'), ('BBB','medium'), ('CCC','small');
 
 
+# ENUM 如何設置長度大小？
+ENUM 的大小(Size length)由不同枚舉值的數量決定。一個字節(1 byte)用於最多255個可能值的枚舉。兩個字節(2 bytes)用於具有256到65,535個可能值的枚舉。請參見：10.5 數據類型存儲要求 - 11.4.4節“ENUM類型(https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html)。
+
+
 # 適合使用 ENUM 的時機
 1. 存儲的是準確、不變的值時
 例如：性別永遠只有 男/女/不公開 這樣3個的值，並不再會增減。
