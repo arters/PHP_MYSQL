@@ -1,0 +1,46 @@
+# MySQL ENUM
+
+ENUM 中文為 枚舉 或稱 列舉，是一種特殊的「非二進位制、non-binary」字串型態。
+
+|        型 態        |   最大個數    |                儲存空間           |
+| ------------------- | -------------| -------------------------------- |
+| ENUM(字串值[,...])  |     65535    | 1byte(255個)2bytes(256到65535個)	 | 
+
+
+建立一個表並帶有 ENUM：
+CREATE TABLE t_shirts (
+    name VARCHAR(40),
+    size ENUM('x-small', 'small', 'medium', 'large', 'x-large')
+);
+
+插入一筆帶有 ENUM 值範例：
+INSERT INTO t_shirts (name, size) VALUES ('AAA','large'), ('BBB','medium'), ('CCC','small');
+
+
+# 適合使用 ENUM 的時機
+1. 存儲的是準確、不變的值時
+例如：性別永遠只有 男/女/不公開 這樣3個的值，並不再會增減。
+或是撲克牌的花色：方塊/梅花/紅心/黑桃。
+
+2. ENUM 值範圍內的數量大於2個並少於30個
+如果 ENUM 值只有2個，可以考慮將 ENUM 屬性換成 TINYINT(1) 或者更更高效的 BIT(1)（MySQL5.0.3及以上）。
+例如: gender ENUM('male', 'female') 可以變換為: is_male BIT(1)。
+當你只有兩個選項時，完全能以布爾值true/ false，結合字段名字中的“is”關鍵詞來區分。超過數十個後必然難於管理與使用。
+
+
+# 使用 ENUM 要注意事情
+
+1. ENUM 使用字串方式儲存值，因此下 QUERY 語法時，要使用查詢字串方式，亦即是使用引號(")方式包覆值進行查詢。
+
+假設有一表並進行查詢
+CREATE TABLE your_table (enum_column ENUM('0', '1', '2'));
+
+正確：
+SELECT * FROM your_table WHERE enum_column = "0"
+錯誤：
+SELECT * FROM table_name WHERE enum_column = 0
+(注意少了引號，變成使用布林方式查詢)
+
+2.ENUM 的移植性不佳
+ENUM 類型不是SQL標準，並非所有資料庫都支援，因此之後如果要轉移成非 MySQL 分支資料庫將要額外處理。
+
